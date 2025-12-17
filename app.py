@@ -14,13 +14,8 @@ import threading
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'cookie-clicker-secret-key-2024'
 
-# Für PythonAnywhere: threading statt eventlet (kein WebSocket-Support)
-# Lokal: eventlet für bessere Performance
-import os
-if os.environ.get('PYTHONANYWHERE_SITE'):
-    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
-else:
-    socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
+# Threading-Modus funktioniert auf allen Python-Versionen (inkl. 3.13)
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
 
 # =============================================================================
 # GAME CONFIGURATION
