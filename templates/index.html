@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍪 Cookie Clicker Multiplayer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <!-- Start Screen -->
+    <div id="start-screen" class="screen active">
+        <div class="start-container">
+            <h1>🍪 Cookie Clicker</h1>
+            <h2>Multiplayer Edition</h2>
+            
+            <div class="input-group">
+                <label for="player-name">Dein Name:</label>
+                <input type="text" id="player-name" placeholder="Spielername eingeben..." maxlength="20">
+            </div>
+            
+            <button id="btn-start-solo" class="btn btn-primary">
+                🎮 Solo Spielen
+            </button>
+            
+            <div class="divider">
+                <span>oder</span>
+            </div>
+            
+            <div class="multiplayer-options">
+                <h3>Multiplayer</h3>
+                
+                <div class="mode-buttons">
+                    <button id="btn-create-versus" class="btn btn-danger">
+                        ⚔️ Versus-Raum erstellen
+                    </button>
+                    <button id="btn-create-coop" class="btn btn-success">
+                        🤝 Coop-Raum erstellen
+                    </button>
+                </div>
+                
+                <div class="join-room">
+                    <input type="text" id="room-code" placeholder="Raum-Code" maxlength="6">
+                    <button id="btn-join-room" class="btn btn-secondary">
+                        Beitreten
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen">
+        <div class="game-container">
+            <!-- Header -->
+            <header class="game-header">
+                <div class="player-info">
+                    <span id="player-display-name">Spieler</span>
+                    <span id="room-info" class="room-badge hidden"></span>
+                </div>
+                <button id="btn-leave-room" class="btn btn-small btn-danger hidden">
+                    🚪 Verlassen
+                </button>
+            </header>
+
+            <!-- Main Game Area -->
+            <div class="game-main">
+                <!-- Cookie Area -->
+                <div class="cookie-area">
+                    <div class="stats-display">
+                        <div class="cookie-count">
+                            <span id="cookie-count">0</span>
+                            <span class="label">Cookies</span>
+                        </div>
+                        <div class="stats-row">
+                            <div class="stat">
+                                <span class="stat-value" id="cps">0</span>
+                                <span class="stat-label">pro Sekunde</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value" id="click-power">1</span>
+                                <span class="stat-label">pro Klick</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="cookie-wrapper">
+                        <button id="cookie-btn" class="cookie-button">
+                            🍪
+                        </button>
+                        <div id="click-particles"></div>
+                    </div>
+                    
+                    <div id="total-cookies" class="total-cookies">
+                        Gesamt: <span id="total-count">0</span> Cookies gebacken
+                    </div>
+                </div>
+
+                <!-- Opponent Area (Versus Mode) -->
+                <div id="opponent-area" class="opponent-area hidden">
+                    <h3>⚔️ Gegner</h3>
+                    <div id="opponent-info">
+                        <div class="opponent-card">
+                            <span class="opponent-name" id="opponent-name">Warte auf Gegner...</span>
+                            <div class="opponent-stats">
+                                <span>🍪 <span id="opponent-cookies">0</span></span>
+                                <span>⚡ <span id="opponent-cps">0</span>/s</span>
+                            </div>
+                            <button id="btn-steal" class="btn btn-danger btn-steal hidden">
+                                🦹 Cookies stehlen!
+                            </button>
+                            <div id="steal-cooldown" class="cooldown hidden">
+                                Cooldown: <span id="cooldown-time">30</span>s
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coop Area -->
+                <div id="coop-area" class="coop-area hidden">
+                    <h3>🤝 Coop-Partner</h3>
+                    <div id="coop-partner-info">
+                        <span id="coop-partner-name">Warte auf Partner...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upgrades Panel -->
+            <div class="upgrades-panel">
+                <h3>🛒 Upgrades</h3>
+                
+                <div class="upgrade-tabs">
+                    <button class="tab-btn active" data-tab="click">👆 Klick</button>
+                    <button class="tab-btn" data-tab="auto">🤖 Auto</button>
+                </div>
+                
+                <div id="upgrades-container" class="upgrades-container">
+                    <!-- Upgrades werden dynamisch eingefügt -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notifications" class="notifications"></div>
+
+    <!-- Game Data (from Flask) -->
+    <script>
+        const UPGRADES_DATA = {{ upgrades | tojson | safe }};
+    </script>
+    <script src="{{ url_for('static', filename='js/game.js') }}"></script>
+</body>
+</html>
